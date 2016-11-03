@@ -10,7 +10,7 @@ module.exports = function(RED)
         var defaultValue = config.defaultValue;
         
         var ffi = require('ffi');
-        var dio = ffi.Library( __dirname + '/dioBridge.so', {
+        var dio = ffi.Library( __dirname + '/revPiIoBridge.so', {
             "writeDIO": ['int', ['string', 'uint32']],
         });
 

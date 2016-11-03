@@ -6,7 +6,7 @@ module.exports = function(RED)
         var node = this;
         // libs
         var ffi = require('ffi');
-        var dio = ffi.Library( __dirname + '/dioBridge.so', {
+        var dio = ffi.Library( __dirname + '/revPiIoBridge.so', {
             "readDIO": ['int', ['string']]
         });
         // load config

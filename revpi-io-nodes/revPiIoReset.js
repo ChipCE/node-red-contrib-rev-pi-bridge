@@ -7,7 +7,7 @@ module.exports = function(RED)
         var node = this;
         //load lib
         var ffi = require('ffi');
-        var dio = ffi.Library( __dirname + '/dioBridge.so', {
+        var dio = ffi.Library( __dirname + '/revPiIoBridge.so', {
             "resetDIO": ['int', []]
         });
 
