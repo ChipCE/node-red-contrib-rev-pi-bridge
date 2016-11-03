@@ -1,6 +1,3 @@
 # rev-pi-nodered-bridge
 
-## To-do
-
-- make-install script
-- nodered local install script ( with exec script location auto detection)
+Access Revolution Pi DIO ports using nodered and IO-name

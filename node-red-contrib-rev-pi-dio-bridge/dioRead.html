@@ -102,4 +102,35 @@
 
 <script type="text/x-red" data-help-name="dio-read">
     <p>Read DIO</p>
+    <h3>Input</h3>
+        <dl class="message-properties">
+            <dt>payload<span class="property-type">any</span></dt>
+            <dd>Force the node to send output.</dd>
+        </dl>
+    <h3>Ouput</h3>
+        <dl class="message-properties">
+            <dt>payload<span class="property-type">int</span></dt>
+            <dd>Pin state.</dd>
+        </dl>
+    <h3>Configuration</h3>
+        <dl class="message-properties">
+            <dt>IO Port<span class="property-type">string</span></dt>
+            <dd>IO port name.</dd>
+            <dt>Update rate<span class="property-type">int</span></dt>
+            <dd>IO refresh interval(ms). Due hardware and software limit, DO NOT set this value too low. Value higher than 10ms is recommended.</dd>
+            <dt>Ignore first<span class="property-type">bool</span></dt>
+            <dd>Skip sending the init value.</dd>
+            <dt>Auto Polling<span class="property-type">bool</span></dt>
+            <dd>Auto send output after interval(ms).</dd>
+            <dt style="color:#415099;">Polling rate<span class="property-type">int</span></dt>
+            <dd>Pooling send interval(ms).</dd>
+            <dt style="color:#415099;">Edge mode<span class="property-type">bool</span></dt>
+            <dd>Only send ouput if the IO state changed.</dd>
+            <dt>Debounce<span class="property-type">bool</span></dt>
+            <dd>Enable software debounce.</dd>
+            <dt style="color:#415099;">Rising Edge<span class="property-type">int</span></dt>
+            <dd>Debounce threshold for rising edge(ms).</dd>
+            <dt style="color:#415099;">Falling Edge<span class="property-type">int</span></dt>
+            <dd>Debounce threshold for falling edge(ms).</dd>
+        </dl>
 </script>

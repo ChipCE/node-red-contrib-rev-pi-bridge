@@ -8,7 +8,7 @@
     }
   },
   "version": "0.1.0",
-  "description": "Control RevPi DIO",
+  "description": "Access Revolution Pi DIO ports using nodered and IO-name",
   "dependencies": {
     "ffi": "^2.2.0"
   },
@@ -18,8 +18,21 @@
   },
   "keywords": [
     "dio",
-    "rev"
+    "rev",
+    "revolution"
   ],
-  "author": "ChipCE",
-  "license": "ISC"
+  "author": {
+    "name": "Chip",
+    "email": "login721@gmail.com"
+  },
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ChipTechno/rev-pi-nodered-bridge"
+  },
+  "contributors": [
+    {
+      "name": "ChipCE"
+    }
+  ]
 }

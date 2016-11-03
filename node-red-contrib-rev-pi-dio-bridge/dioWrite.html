@@ -42,7 +42,7 @@
         <input type="text" id="node-input-ioPort" placeholder="IO Port">
     </div>
     <div class="form-row">
-        <label for="node-input-enableDefault"><i class="icon-play"></i> Init value</label>
+        <label for="node-input-enableDefault"><i class="fa fa-spinner"></i> Set default</label>
         <input type="checkbox" id="node-input-enableDefault" placeholder="" style="display:inline-block; width:auto; vertical-align:top;">
         <label> Enable</label>
     </div>
@@ -54,4 +54,18 @@
 
 <script type="text/x-red" data-help-name="dio-write">
     <p>Write RevPi DIO.</p>
+    <h3>Input</h3>
+        <dl class="message-properties">
+            <dt>payload<span class="property-type">int</span></dt>
+            <dd>Value to write.</dd>
+        </dl>
+    <h3>Configuration</h3>
+        <dl class="message-properties">
+            <dt>IO Port<span class="property-type">string</span></dt>
+            <dd>IO port name.</dd>
+            <dt>Set default<span class="property-type">bool</span></dt>
+            <dd>Enable IO default value.</dd>
+            <dt>Value<span class="property-type">int</span></dt>
+            <dd>Default value.</dd>
+        </dl>
 </script>

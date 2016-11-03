@@ -37,6 +37,7 @@ module.exports = function(RED)
         else
         {
             ioState = lastRead;
+            lastSend = ioState;
             if(!ignoreFirst)
             {
                 node.status({ fill: "green", shape:(autoPolling)?"ring":"dot", text: ioState });
