@@ -1,0 +1,53 @@
+{
+    "_from": "node-red-contrib-rev-pi-dio-bridge",
+    "_id": "node-red-contrib-rev-pi-dio-bridge@0.1.0",
+    "_inBundle": false,
+    "_location": "/node-red-contrib-rev-pi-dio-bridge",
+    "_phantomChildren": {},
+    "_requested": {
+      "type": "version",
+      "registry": true,
+      "raw": "node-red-contrib-rev-pi-dio-bridge@0.1.0",
+      "name": "node-red-contrib-rev-pi-dio-bridge",
+      "escapedName": "node-red-contrib-rev-pi-dio-bridge",
+      "rawSpec": "0.1.0",
+      "saveSpec": null,
+      "fetchSpec": "0.1.0"
+    },
+    "_requiredBy": [
+      "#USER",
+      "/"
+    ],
+    "_spec": "node-red-contrib-rev-pi-dio-bridge@0.1.0",
+    "_where": "/home/pi/.node-red",
+    "author": {
+      "name": "na",
+      "email": "na@mail.mail"
+    },
+    "bundleDependencies": false,
+    "dependencies": {
+      "app-root-path": "^2.0.1",
+      "ffi": "^2.2.0"
+    },
+    "deprecated": false,
+    "description": "Revolution Pi DI/DO/DIO access module for use in Node-Red",
+    "directories": {
+      "lib": "lib",
+      "src": "src"
+    },
+    "keywords": [
+      "revolution",
+      "pi",
+      "node-red",
+      "dio"
+    ],
+    "license": "ISC",
+    "name": "node-red-contrib-rev-pi-dio-bridge",
+    "node-red": {
+      "nodes": {
+        "dioRead": "dioRead.js"
+      }
+    },
+    "version": "0.1.0"
+  }
+  

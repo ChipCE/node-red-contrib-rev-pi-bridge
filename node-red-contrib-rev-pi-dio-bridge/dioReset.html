@@ -1,0 +1,32 @@
+<script type="text/javascript">
+    RED.nodes.registerType('dio-reset',{
+        category: 'function',
+        color: '#ff8660',
+        defaults: {
+            name: {value:""},
+            autoReset: {value:false}
+        },
+        inputs:1,
+        outputs:0,
+        icon: "debug.png",
+        label: function() {
+            return this.name||"DIO Reset";
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="dio-reset">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-autoReset"><i class="fa fa-play"></i> On deploy</label>
+        <input type="checkbox" id="node-input-autoReset" placeholder="" style="display:inline-block; width:auto; vertical-align:top;">
+        <label> Reset DIO</label>
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="dio-reset">
+    <p>Reset RevPi DIO.</p>
+</script>

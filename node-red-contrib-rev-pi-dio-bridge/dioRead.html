@@ -1,0 +1,62 @@
+<script type="text/javascript">
+    RED.nodes.registerType('dio-read',{
+        category: 'function',
+        color: '#ff8660',
+        defaults: {
+            name: {value:""},
+            ioPort: {value:"",required:true},
+            ignoreFirst : {value:false},
+            autoPolling: {value:false},
+            pollingSpeed:{value:10,validate:RED.validators.number()}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "arrow-in.png",
+        label: function() {
+            return this.name||"DIO Read";
+        },
+        oneditprepare: function() 
+        {
+            $("#node-input-autoPolling").change(function() {
+                if ($(this).is(":checked")) 
+                {
+                    $("#pollingSpeed-setting").show();
+                } else 
+                {
+                    $("#pollingSpeed-setting").hide();
+                    if($('#node-input-pollingSpeed').val() == "")
+                        $('#node-input-pollingSpeed').val(10);
+                }
+            });
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="dio-read">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-ioPort"><i class="fa fa-sign-in"></i> IO Port</label>
+        <input type="text" id="node-input-ioPort" placeholder="IO Port">
+    </div>
+    <div class="form-row">
+        <label for="node-input-ignoreFirst"><i class="fa fa-times"></i> Ignore first</label>
+        <input type="checkbox" id="node-input-ignoreFirst" placeholder="" style="display:inline-block; width:auto; vertical-align:top;">
+        <label> Enable</label>
+    </div>
+    <div class="form-row">
+        <label for="node-input-autoPolling"><i class="fa fa-repeat"></i> Auto Polling</label>
+        <input type="checkbox" id="node-input-autoPolling" placeholder="" style="display:inline-block; width:auto; vertical-align:top;">
+        <label> Enable</label>
+    </div>
+    <div class="form-row hide" id="pollingSpeed-setting">
+        <label for="node-input-pollingSpeed"><i class="fa fa-info-circle"></i> Polling rate</label>
+        <input type="text" id="node-input-pollingSpeed" placeholder="ms">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="dio-read">
+    <p>Read DIO</p>
+</script>

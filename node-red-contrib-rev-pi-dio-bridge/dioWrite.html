@@ -1,0 +1,57 @@
+<script type="text/javascript">
+    RED.nodes.registerType('dio-write',{
+        category: 'function',
+        color: '#ff8660',
+        defaults: {
+            name: {value:""},
+            ioPort: {value:"",required:true},
+            enableDefault: {value:false},
+            defaultValue:{value:0,validate:RED.validators.number()}
+
+        },
+        inputs:1,
+        outputs:0,
+        icon: "arrow-in.png",
+        label: function() {
+            return this.name||"DIO Write";
+        },
+        oneditprepare: function() 
+        {
+            $("#node-input-enableDefault").change(function() {
+                if ($(this).is(":checked")) 
+                {
+                    $("#default-value-setting").show();
+                } else 
+                {
+                    $("#default-value-setting").hide();
+                    if($('#node-input-defaultValue').val() == "")
+                        $('#node-input-defaultValue').val(0);
+                }
+            });
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="dio-write">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-ioPort"><i class="fa fa-sign-in"></i> IO Port</label>
+        <input type="text" id="node-input-ioPort" placeholder="IO Port">
+    </div>
+    <div class="form-row">
+        <label for="node-input-enableDefault"><i class="icon-play"></i> Init value</label>
+        <input type="checkbox" id="node-input-enableDefault" placeholder="" style="display:inline-block; width:auto; vertical-align:top;">
+        <label> Enable</label>
+    </div>
+    <div class="form-row hide" id="default-value-setting">
+        <label for="node-input-defaultValue"><i class="fa fa-info-circle"></i> Value</label>
+        <input type="text" id="node-input-defaultValue" placeholder="Default Value">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="dio-write">
+    <p>Write RevPi DIO.</p>
+</script>

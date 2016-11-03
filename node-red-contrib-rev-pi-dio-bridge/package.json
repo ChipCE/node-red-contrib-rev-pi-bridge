@@ -1,0 +1,25 @@
+{
+  "name": "node-red-contrib-rev-pi-dio-bridge",
+  "node-red" : {
+    "nodes": {
+      "dioRead": "dioRead.js",
+      "dioWrite": "dioWrite.js",
+      "dioReset": "dioReset.js"
+    }
+  },
+  "version": "0.1.0",
+  "description": "Control RevPi DIO",
+  "dependencies": {
+    "ffi": "^2.2.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "dio",
+    "rev"
+  ],
+  "author": "ChipCE",
+  "license": "ISC"
+}

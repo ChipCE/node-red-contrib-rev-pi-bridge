@@ -1,0 +1,45 @@
+<script type="text/javascript">
+  RED.nodes.registerType('revpi-write',{
+	category: 'function',
+	color: '#fa8258',
+	defaults:{
+		name:{value:""},
+		offset:{value:"",
+			required:"true"},
+		bit:{value:"",
+			required:"true"},
+		value:{value:"",
+			required:"true"}
+		
+	},
+	inputs:1,
+	outputs:1,
+	icon:"revpi.png",
+	label:function(){
+		return this.name||"revpi-write";
+	}
+});
+</script>
+
+<script type="text/x-red" data-template-name="revpi-write">
+	<div-class="form-row">
+	  <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+	<input type="text" id="node-input-name" placeholder="Name">
+	</div>
+	<div-class="form-row">
+	  <label for="node-input-offset"><i class="icon-tag"></i> Offset</label>
+	<input type="text" id="node-input-offset">
+	</div>
+	<div-class="form-row">
+	  <label for="node-input-bit"><i class="icon-tag"></i> Bit</label>
+	<input type="text" id="node-input-bit">
+	</div>
+	<div-class="form-row">
+	  <label for="node-input-value"><i class="icon-tag"></i> Value</label>
+	<input type="text" id="node-input-value">
+	</div>
+</script>
+
+<script type ="text/x-red" data-help-name="revpi-write">
+	<p> A simple node that writes to DIO pins of the REVPI</p>
+</script>
