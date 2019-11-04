@@ -1,5 +1,0 @@
-
-Used compiler commands to create shared library
-
-gcc -c -Wall -Werror -fpic *.c
-gcc -shared -o ../lib/libPiTest.so *.o
