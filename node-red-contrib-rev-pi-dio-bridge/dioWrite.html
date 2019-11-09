@@ -13,7 +13,7 @@
         outputs:0,
         icon: "arrow-in.png",
         label: function() {
-            return this.name||"DIO Write";
+            return this.name||(this.ioPort||"DIO Write");
         },
         oneditprepare: function() 
         {

@@ -29,7 +29,7 @@ int writeDIO(char *pszVariableName, uint32_t i32uValue)
 		}
 		else
 		{
-			printf("Set bit %d on byte at offset %d. Value %d\n", sPIValue.i8uBit, sPIValue.i16uAddress,sPIValue.i8uValue);
+			//printf("Set bit %d on byte at offset %d. Value %d\n", sPIValue.i8uBit, sPIValue.i16uAddress,sPIValue.i8uValue);
 			return 0;
 		}
 	} 
@@ -44,7 +44,7 @@ int writeDIO(char *pszVariableName, uint32_t i32uValue)
 		}
 		else
 		{
-			printf("Write value %d dez (=%02x hex) to offset %d.\n", i8uValue, i8uValue,sPiVariable.i16uAddress);
+			//printf("Write value %d dez (=%02x hex) to offset %d.\n", i8uValue, i8uValue,sPiVariable.i16uAddress);
 			return 0;
 		}
 	} 
@@ -59,7 +59,7 @@ int writeDIO(char *pszVariableName, uint32_t i32uValue)
 		}
 		else
 		{
-			printf("Write value %d dez (=%04x hex) to offset %d.\n", i16uValue, i16uValue,sPiVariable.i16uAddress);
+			//printf("Write value %d dez (=%04x hex) to offset %d.\n", i16uValue, i16uValue,sPiVariable.i16uAddress);
 			return 0;
 		}
 	} 
@@ -73,7 +73,7 @@ int writeDIO(char *pszVariableName, uint32_t i32uValue)
 		}
 		else
 		{
-			printf("Write value %d dez (=%08x hex) to offset %d.\n", i32uValue, i32uValue,sPiVariable.i16uAddress);
+			//printf("Write value %d dez (=%08x hex) to offset %d.\n", i32uValue, i32uValue,sPiVariable.i16uAddress);
 			return 0;
 		}
 	}

@@ -24,10 +24,10 @@ $(ODIR)/%.o: %.c $(DEPS)
 piTest: $(OBJ)
 	$(CC) -o $@ $^ $(CFLAGS)
 
-.PHONY: clean lib
-
 clean:
 	rm -f $(ODIR)/*.o $(ODIR)/*.so piTest
 
 lib:
 	$(CC) ${LDFLAGS} -o $(TARGET_LIB) $(LINK_OBJ)
+
+.PHONY: clean lib

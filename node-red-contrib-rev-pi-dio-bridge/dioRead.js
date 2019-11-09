@@ -18,15 +18,22 @@ module.exports = function(RED)
         var lastRead = -1;
         lastRead = parseInt(dio.readDIO(ioPort));
 
+        //the result of first attemp to read io, show error if failed
         if(lastRead<0)
         {
-            node.status({ fill: "red", shape: "dot", text: "IO Error" });
+            if(autoPolling)
+                node.status({ fill: "red", shape: "ring", text: "IO Error" });
+            else
+                node.status({ fill: "red", shape: "dot", text: "IO Error" });
         }
         else
         {
             if(!ignoreFirst)
             {
-                node.status({ fill: "green", shape: "dot", text: lastRead });
+                if(autoPolling)
+                    node.status({ fill: "green", shape: "ring", text: lastRead });
+                else
+                    node.status({ fill: "green", shape: "dot", text: lastRead });
                 msg = {};
                 msg.payload = lastRead;
                 node.send(msg);
@@ -38,12 +45,18 @@ module.exports = function(RED)
             res = parseInt(dio.readDIO(ioPort));
             if(res<0)
             {
+                if(autoPolling)
+                    node.status({ fill: "red", shape: "ring", text: "IO Error" });
+                else
                 node.status({ fill: "red", shape: "dot", text: "IO Error" });
             }
             else
             {
                 node.lastRead = res;
-                node.status({ fill: "green", shape: "dot", text: res });
+                if(autoPolling)
+                    node.status({ fill: "green", shape: "ring", text: res });
+                else
+                    node.status({ fill: "green", shape: "dot", text: res });
                 msg = {};
                 msg.payload = res;
                 node.send(msg);
@@ -55,16 +68,16 @@ module.exports = function(RED)
             res = parseInt(dio.readDIO(ioPort));
             if(res<0)
             {
-                node.status({ fill: "red", shape: "dot", text: "IO Error" });
+                node.status({ fill: "red", shape: "ring", text: "IO Error" });
                 //also stop the loop . This may cause the poll STOP WORKING with just one IO Error
                 clearInterval(node.pollLoop);
             }
             else
             {
-                if( node.lastRead != res)
+                if( lastRead != res)
                 {
-                    node.lastRead = res;
-                    node.status({ fill: "green", shape: "dot", text: res });
+                    lastRead = res;
+                    node.status({ fill: "green", shape: "ring", text: res });
                     msg = {};
                     msg.payload = res;
                     node.send(msg);
@@ -80,7 +93,7 @@ module.exports = function(RED)
         
         node.on('input', function(msg)
         {
-            readDIO(true);
+            readDIO();
         });
         
         node.on('close',function()
