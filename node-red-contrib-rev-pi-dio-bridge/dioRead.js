@@ -28,19 +28,13 @@ module.exports = function(RED)
         //the result of first attemp to read io, show error if failed
         if(lastRead<0)
         {
-            if(autoPolling)
-                node.status({ fill: "red", shape: "ring", text: "IO Error" });
-            else
-                node.status({ fill: "red", shape: "dot", text: "IO Error" });
+            node.status({ fill: "red", shape:(autoPolling)?"ring":"dot", text: "IO Error" });
         }
         else
         {
             if(!ignoreFirst)
             {
-                if(autoPolling)
-                    node.status({ fill: "green", shape: "ring", text: lastRead });
-                else
-                    node.status({ fill: "green", shape: "dot", text: lastRead });
+                node.status({ fill: "green", shape:(autoPolling)?"ring":"dot", text: lastRead });
                 msg = {};
                 msg.payload = lastRead;
                 node.send(msg);
@@ -52,10 +46,7 @@ module.exports = function(RED)
             res = parseInt(dio.readDIO(ioPort));
             if(res<0)
             {
-                if(autoPolling)
-                    node.status({ fill: "red", shape: "ring", text: "IO Error" });
-                else
-                node.status({ fill: "red", shape: "dot", text: "IO Error" });
+                node.status({ fill: "red", shape:(autoPolling)?"ring":"dot", text: "IO Error" });
             }
             else
             {
@@ -64,10 +55,7 @@ module.exports = function(RED)
                     if(res!=lastRead)
                     {
                         lastRead = res;
-                        if(autoPolling)
-                            node.status({ fill: "green", shape: "ring", text: res });
-                        else
-                            node.status({ fill: "green", shape: "dot", text: res });
+                        node.status({ fill: "green", shape:(autoPolling)?"ring":"dot", text: res });
                         msg = {};
                         msg.payload = res;
                         node.send(msg);
@@ -76,10 +64,7 @@ module.exports = function(RED)
                 else
                 {
                     lastRead = res;
-                    if(autoPolling)
-                        node.status({ fill: "green", shape: "ring", text: res });
-                    else
-                        node.status({ fill: "green", shape: "dot", text: res });
+                    node.status({ fill: "green", shape:(autoPolling)?"ring":"dot", text: res });
                     msg = {};
                     msg.payload = res;
                     node.send(msg);
