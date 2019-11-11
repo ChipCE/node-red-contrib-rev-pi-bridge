@@ -77,6 +77,7 @@ module.exports = function(RED)
 
         function ioPolling()
         {
+            msg = {};
             res = parseInt(dio.readDIO(ioPort));
             if(res < 0)
             {
