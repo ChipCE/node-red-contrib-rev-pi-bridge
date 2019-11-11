@@ -48,7 +48,7 @@
             });
 
             $("#node-input-enableEdgeMode").change(function() {
-                 if ($(this).is(":checked")) 
+                if ($(this).is(":checked") && $("#node-input-autoPolling").is(":checked"))
                 {
                     $(".edge-setting").show();
                     if ($("#node-input-enableDebounce").is(":checked")) 
@@ -67,7 +67,7 @@
             });
 
             $("#node-input-enableDebounce").change(function() {
-                if ($(this).is(":checked")) 
+                if ($(this).is(":checked") && $("#node-input-autoPolling").is(":checked") && $("#node-input-enableEdgeMode").is(":checked")) 
                 {
                     $(".debounce-setting").show();
                 } else 

@@ -98,53 +98,37 @@ module.exports = function(RED)
             }
             else
             {
-                if(enableDebounce)
+                if(enableEdgeMode)
                 {
-                    if(enableEdgeMode)
+                    if( lastRead != res)
                     {
-                        if(!busy)
+                        if(enableDebounce)
                         {
-                            delayTime = (res>0)?risingEdgeDelay:fallingEdgeDelay;
-                            if( lastRead != res)
+                            if(!busy)
                             {
-                                busy = true;
-                                setTimeout(function(){
-                                    readDIO(enableEdgeMode);
-                                    busy = false;
-                                }, delayTime);
+                                delayTime = (res>0)?risingEdgeDelay:fallingEdgeDelay;
+                                if( lastRead != res)
+                                {
+                                    busy = true;
+                                    setTimeout(function(){
+                                        readDIO(enableEdgeMode);
+                                        busy = false;
+                                    }, delayTime);
+                                }
                             }
                         }
-                    }
-                    else
-                    {
-                        if(!busy)
+                        else
                         {
-                            delayTime = (res>0)?risingEdgeDelay:fallingEdgeDelay;
-                            setTimeout(function(){
-                                readDIO(enableEdgeMode);
-                                busy = false;
-                            }, delayTime);
+                            lastRead = res;
+                            msg.payload = res;
+                            node.send(msg);
                         }
                     }
                 }
                 else
                 {
-                    if(enableEdgeMode)
-                    {
-                        if( lastRead != res)
-                        {
-                            lastRead = res;
-                            node.status({ fill: "green", shape: "ring", text: res });
-                            msg = {};
-                            msg.payload = res;
-                            node.send(msg);
-                        }
-                    }
-                    else
-                    {
-                        msg.payload = res;
-                        node.send(msg);
-                    }
+                    msg.payload = res;
+                    node.send(msg);
                 }
             }
         }
