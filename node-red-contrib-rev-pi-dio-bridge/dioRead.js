@@ -14,9 +14,16 @@ module.exports = function(RED)
         var ioPort = config.ioPort;
         var ignoreFirst = config.ignoreFirst;
         var autoPolling = config.autoPolling;
-        var pollingSpeed = config.pollingSpeed;
+        var pollingSpeed = Number(config.pollingSpeed);
+        var enableEdgeMode = config.enableEdgeMode;
+        var enableDebounce = config.enableDebounce;
+        var risingEdgeDelay = Number(config.risingEdgeDelay);
+        var fallingEdgeDelay = Number(config.fallingEdgeDelay);
+
         var lastRead = -1;
-        lastRead = parseInt(dio.readDIO(ioPort));
+        var busy = false;
+        var lastRead = parseInt(dio.readDIO(ioPort));
+        //var delayTime;
 
         //the result of first attemp to read io, show error if failed
         if(lastRead<0)
@@ -40,7 +47,7 @@ module.exports = function(RED)
             }
         }
 
-        function readDIO()
+        function readDIO(edge)
         {
             res = parseInt(dio.readDIO(ioPort));
             if(res<0)
@@ -52,35 +59,92 @@ module.exports = function(RED)
             }
             else
             {
-                node.lastRead = res;
-                if(autoPolling)
-                    node.status({ fill: "green", shape: "ring", text: res });
+                if(edge)
+                {
+                    if(res!=lastRead)
+                    {
+                        lastRead = res;
+                        if(autoPolling)
+                            node.status({ fill: "green", shape: "ring", text: res });
+                        else
+                            node.status({ fill: "green", shape: "dot", text: res });
+                        msg = {};
+                        msg.payload = res;
+                        node.send(msg);
+                    }
+                }
                 else
-                    node.status({ fill: "green", shape: "dot", text: res });
-                msg = {};
-                msg.payload = res;
-                node.send(msg);
+                {
+                    lastRead = res;
+                    if(autoPolling)
+                        node.status({ fill: "green", shape: "ring", text: res });
+                    else
+                        node.status({ fill: "green", shape: "dot", text: res });
+                    msg = {};
+                    msg.payload = res;
+                    node.send(msg);
+                }
             }
         }
 
         function polling()
         {
             res = parseInt(dio.readDIO(ioPort));
-            if(res<0)
+            if(res < 0)
             {
                 node.status({ fill: "red", shape: "ring", text: "IO Error" });
                 //also stop the loop . This may cause the poll STOP WORKING with just one IO Error
-                clearInterval(node.pollLoop);
+                //clearInterval(node.pollLoop);
             }
             else
             {
-                if( lastRead != res)
+                if(enableDebounce)
                 {
-                    lastRead = res;
-                    node.status({ fill: "green", shape: "ring", text: res });
-                    msg = {};
-                    msg.payload = res;
-                    node.send(msg);
+                    if(enableEdgeMode)
+                    {
+                        if(!busy)
+                        {
+                            delayTime = (res>0)?risingEdgeDelay:fallingEdgeDelay;
+                            if( lastRead != res)
+                            {
+                                busy = true;
+                                setTimeout(function(){
+                                    readDIO(enableEdgeMode);
+                                    busy = false;
+                                }, delayTime);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if(!busy)
+                        {
+                            delayTime = (res>0)?risingEdgeDelay:fallingEdgeDelay;
+                            setTimeout(function(){
+                                readDIO(enableEdgeMode);
+                                busy = false;
+                            }, delayTime);
+                        }
+                    }
+                }
+                else
+                {
+                    if(enableEdgeMode)
+                    {
+                        if( lastRead != res)
+                        {
+                            lastRead = res;
+                            node.status({ fill: "green", shape: "ring", text: res });
+                            msg = {};
+                            msg.payload = res;
+                            node.send(msg);
+                        }
+                    }
+                    else
+                    {
+                        msg.payload = res;
+                        node.send(msg);
+                    }
                 }
             }
         }
@@ -89,17 +153,16 @@ module.exports = function(RED)
         if(autoPolling && (lastRead>=0))
             node.pollLoop = setInterval(polling, pollingSpeed);
         
-
-        
         node.on('input', function(msg)
         {
-            readDIO();
+            readDIO(false);
         });
         
         node.on('close',function()
         {
             if(autoPolling)
                 clearInterval(node.pollLoop);
+            busy = false;
         });
     }
     RED.nodes.registerType("dio-read", dioRead);
