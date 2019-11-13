@@ -22,14 +22,12 @@ module.exports = function(RED)
         var fallingEdgeDelay = Number(config.fallingEdgeDelay);
 
         var lastRead = -1;
-        var lastRead = parseInt(dio.readDIO(ioPort));
         var lastChanged = 0;
         var ioState = -1;
         var lastSend = -1;
         //new Date().getTime()
 
-
-        //the result of first attemp to read io, show error if failed
+        lastRead = parseInt(dio.readDIO(ioPort));
         if(lastRead<0)
         {
             node.status({ fill: "red", shape:(autoPolling)?"ring":"dot", text: "IO Error" });
@@ -40,14 +38,14 @@ module.exports = function(RED)
             lastSend = ioState;
             if(!ignoreFirst)
             {
-                node.status({ fill: "green", shape:(autoPolling)?"ring":"dot", text: ioState });
+                node.status({ fill: "blue", shape:(autoPolling)?"ring":"dot", text: ioState });
                 msg = {};
                 msg.payload = ioState;
                 node.send(msg);
             }
             else
             {
-                node.status({ fill: "green", shape:(autoPolling)?"ring":"dot", text: ioState });
+                node.status({ fill: "blue", shape:(autoPolling)?"ring":"dot", text: ioState });
             }
         }
 
