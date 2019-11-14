@@ -7,6 +7,7 @@
             ioPort: {value:"",required:true},
             updateRate: {value:50,validate:RED.validators.number()},
             ignoreFirst : {value:false},
+            enableCounter: {value:false},
             autoPolling: {value:false},
             pollingSpeed:{value:10,validate:RED.validators.number()},
             enableEdgeMode: {value:true},
@@ -71,6 +72,11 @@
         <label> Enable</label>
     </div>
     <div class="form-row">
+        <label for="node-input-enableCounter"><i class="fa fa-tachometer"></i> Counter</label>
+        <input type="checkbox" id="node-input-enableCounter" placeholder="" style="display:inline-block; width:auto; vertical-align:top;">
+        <label> Enable</label>
+    </div>
+    <div class="form-row">
         <label for="node-input-autoPolling"><i class="fa fa-repeat"></i> Auto Polling</label>
         <input type="checkbox" id="node-input-autoPolling" placeholder="" style="display:inline-block; width:auto; vertical-align:top;">
         <label> Enable</label>
@@ -111,6 +117,10 @@
         <dl class="message-properties">
             <dt>payload<span class="property-type">int</span></dt>
             <dd>Pin state.</dd>
+            <dt style="color:#415099;">upCounter<span class="property-type">int</span></dt>
+            <dd>Rising edge counter.</dd>
+            <dt style="color:#415099;">downCounter<span class="property-type">int</span></dt>
+            <dd>Falling edge counter.</dd>
         </dl>
     <h3>Configuration</h3>
         <dl class="message-properties">
@@ -120,6 +130,9 @@
             <dd>IO refresh interval(ms). Due hardware and software limit, DO NOT set this value too low. Value higher than 10ms is recommended.</dd>
             <dt>Ignore first<span class="property-type">bool</span></dt>
             <dd>Skip sending the init value.</dd>
+            <dt>Counter<span class="property-type">bool</span></dt>
+            <dd>Enable rising edge and falling edge counter.</dd>
+            <dt style="color:#415099;">Polling rate<span class="property-type">int</span></dt>
             <dt>Auto Polling<span class="property-type">bool</span></dt>
             <dd>Auto send output after interval(ms).</dd>
             <dt style="color:#415099;">Polling rate<span class="property-type">int</span></dt>

@@ -20,7 +20,10 @@ module.exports = function(RED)
         var enableDebounce = config.enableDebounce;
         var risingEdgeDelay = Number(config.risingEdgeDelay);
         var fallingEdgeDelay = Number(config.fallingEdgeDelay);
+        var enableCounter = config.enableCounter;
 
+        var upCounter = 0;
+        var downCounter = 0;
         var lastRead = -1;
         var lastChanged = 0;
         var ioState = -1;
@@ -62,6 +65,11 @@ module.exports = function(RED)
                         lastSend = ioState;
                         node.status({ fill: "green", shape: "ring", text: ioState });
                         msg.payload = ioState;
+                        if(enableCounter)
+                        {
+                            msg.upCounter = upCounter;
+                            msg.downCounter = downCounter;
+                        }
                         node.send(msg);
                     }
                 }
@@ -69,6 +77,11 @@ module.exports = function(RED)
                 {
                     node.status({ fill: "green", shape: "ring", text: ioState });
                     msg.payload = ioState;
+                    if(enableCounter)
+                    {
+                        msg.upCounter = upCounter;
+                        msg.downCounter = downCounter;
+                    }
                     node.send(msg);
                 }
             }
@@ -99,6 +112,7 @@ module.exports = function(RED)
                     {
                         if(ioState!=res)
                         {
+                            (res>0)?upCounter++:downCounter++;
                             ioState = res;
                         }
                     }
@@ -107,6 +121,7 @@ module.exports = function(RED)
                 {
                     if(ioState!=res)
                     {
+                        (res>0)?upCounter++:downCounter++;
                         ioState = res;
                     }
                 }
@@ -128,6 +143,11 @@ module.exports = function(RED)
             {
                 node.status({ fill: "green", shape: "dot", text: ioState });
                 msg.payload = ioState;
+                if(enableCounter)
+                {
+                    msg.upCounter = upCounter;
+                    msg.downCounter = downCounter;
+                }
                 node.send(msg);
             }
         });
@@ -137,6 +157,12 @@ module.exports = function(RED)
             if(autoPolling)
                 clearInterval(node.pollLoop);
             clearInterval(node.ioPollLop);
+            upCounter = 0;
+            downCounter = 0;
+            lastRead = -1;
+            lastChanged = 0;
+            ioState = -1;
+            lastSend = -1;
         });
     }
     RED.nodes.registerType("dio-read", dioRead);
