@@ -94,7 +94,9 @@ module.exports = function(RED)
             if(res < 0)
             {
                 node.status({ fill: "red", shape:(autoPolling)?"ring":"dot", text: "IO Error" });
+                //node.warn("io error");
                 ioState = -1;
+                lastSend = -1;
             }
             else
             {
