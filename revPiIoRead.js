@@ -1,7 +1,7 @@
 module.exports = function(RED)
 {
 	
-    function dioRead(config) 
+    function revPiIoRead(config) 
     {
         RED.nodes.createNode(this,config);
         var node = this;
@@ -168,5 +168,5 @@ module.exports = function(RED)
             lastSend = -1;
         });
     }
-    RED.nodes.registerType("dio-read", dioRead);
+    RED.nodes.registerType("rev-pi-io-read", revPiIoRead);
 }

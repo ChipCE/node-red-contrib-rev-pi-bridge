@@ -2,12 +2,12 @@
   "name": "node-red-contrib-rev-pi-bridge",
   "node-red" : {
     "nodes": {
-      "dioRead": "dioRead.js",
-      "dioWrite": "dioWrite.js",
-      "dioReset": "dioReset.js"
+      "revPiIoRead": "revPiIoRead.js",
+      "revPiIoWrite": "revPiIoWrite.js",
+      "revPiIoReset": "revPiIoReset.js"
     }
   },
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Access Revolution Pi ports using nodered and IO-name",
   "dependencies": {
     "ffi": "^2.2.0"

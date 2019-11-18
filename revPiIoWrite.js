@@ -1,6 +1,6 @@
 module.exports = function(RED)
 {
-    function dioWrite(config) 
+    function revPiIoWrite(config) 
     {
     
         RED.nodes.createNode(this,config);
@@ -46,5 +46,5 @@ module.exports = function(RED)
             node.status({});
         });
     }
-    RED.nodes.registerType("dio-write", dioWrite);
+    RED.nodes.registerType("rev-pi-io-write", revPiIoWrite);
 }

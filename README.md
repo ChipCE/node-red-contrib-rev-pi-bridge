@@ -3,6 +3,8 @@
 Access Revolution Pi IO using nodered and IO-name.  
 Require nodejs v11. This node does not support node v12 yet due it's dependencie FFI cannot be compiled with node v12. 
 
+
+![alt text](https://raw.githubusercontent.com/ChipTechno/node-red-contrib-rev-pi-bridge/master/img/review.png "Review")
 ## DioRead
 
 - IO Port : <code>string</code> IO port name.  

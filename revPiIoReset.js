@@ -1,7 +1,7 @@
 module.exports = function(RED)
 {
 	
-    function dioReset(config) 
+    function revPiIoReset(config) 
     {
         RED.nodes.createNode(this,config);
         var node = this;
@@ -52,5 +52,5 @@ module.exports = function(RED)
             }
         });
     }
-    RED.nodes.registerType("dio-reset", dioReset);
+    RED.nodes.registerType("rev-pi-io-reset", revPiIoReset);
 }
