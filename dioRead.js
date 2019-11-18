@@ -41,14 +41,14 @@ module.exports = function(RED)
             lastSend = ioState;
             if(!ignoreFirst)
             {
-                node.status({ fill: "blue", shape:(autoPolling)?"ring":"dot", text: ioState });
+                node.status({ fill: "blue", shape:(autoPolling)?"ring":"dot", text: enableCounter? "" + ioState + " [" + upCounter + "/" + downCounter + "]":ioState });
                 msg = {};
                 msg.payload = ioState;
                 node.send(msg);
             }
             else
             {
-                node.status({ fill: "blue", shape:(autoPolling)?"ring":"dot", text: ioState });
+                node.status({ fill: "blue", shape:(autoPolling)?"ring":"dot", text: enableCounter? "" + ioState + " [" + upCounter + "/" + downCounter + "]":ioState });
             }
         }
 
@@ -63,7 +63,8 @@ module.exports = function(RED)
                     if(lastSend != ioState)
                     {
                         lastSend = ioState;
-                        node.status({ fill: "green", shape: "ring", text: ioState });
+                        node.status({ fill: "green", shape: "ring", text: enableCounter? "" + ioState + " [" + upCounter + "/" + downCounter + "]":ioState });
+                        
                         msg.payload = ioState;
                         if(enableCounter)
                         {
@@ -75,7 +76,7 @@ module.exports = function(RED)
                 }
                 else
                 {
-                    node.status({ fill: "green", shape: "ring", text: ioState });
+                    node.status({ fill: "green", shape: "ring", text: enableCounter? "" + ioState + " [" + upCounter + "/" + downCounter + "]":ioState });
                     msg.payload = ioState;
                     if(enableCounter)
                     {
@@ -143,7 +144,7 @@ module.exports = function(RED)
         {
             if(ioState >= 0)
             {
-                node.status({ fill: "green", shape: "dot", text: ioState });
+                node.status({ fill: "green", shape: "dot", text: enableCounter? "" + ioState + " [" + upCounter + "/" + downCounter + "]":ioState });
                 msg.payload = ioState;
                 if(enableCounter)
                 {
