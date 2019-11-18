@@ -1,6 +1,6 @@
 # rev-pi-nodered-bridge
 
-Access Revolution Pi DIO using nodered and IO-name.  
+Access Revolution Pi IO using nodered and IO-name.  
 Require nodejs v11. This node does not support node v12 yet due it's dependencie FFI cannot be compiled with node v12. 
 
 ## DioRead
