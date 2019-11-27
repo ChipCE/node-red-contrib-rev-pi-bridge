@@ -105,18 +105,21 @@ module.exports = function(RED)
                 {
                     lastRead = res;
                     lastChanged = new Date().getTime();
+                    node.log("IO read : " + res);
                 }
 
                 // cond for rising and falling edge
                 if(enableDebounce)
                 {
                     debounceTime = (res>0)?risingEdgeDelay:fallingEdgeDelay;
-                    if(new Date().getTime() - lastChanged > debounceTime)
+                    triggerTime = new Date().getTime() - lastChanged;
+                    if(triggerTime > debounceTime)
                     {
                         if(ioState!=res)
                         {
                             (res>0)?upCounter++:downCounter++;
                             ioState = res;
+                            node.log("IO " + ioPort +" state changed : " + ioState + " (" + triggerTime + "ms)");
                         }
                     }
                 }
@@ -126,6 +129,7 @@ module.exports = function(RED)
                     {
                         (res>0)?upCounter++:downCounter++;
                         ioState = res;
+                        node.log("IO state changed : " + ioState + " (" + (new Date().getTime() - lastChanged) + "ms)");
                     }
                 }
             }
