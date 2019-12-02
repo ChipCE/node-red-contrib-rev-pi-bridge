@@ -105,7 +105,7 @@ module.exports = function(RED)
                 {
                     lastRead = res;
                     lastChanged = new Date().getTime();
-                    node.log("IO read : " + res);
+                    node.debug("IO read : " + res);
                 }
 
                 // cond for rising and falling edge
