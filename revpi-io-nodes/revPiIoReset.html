@@ -1,14 +1,14 @@
 <script type="text/javascript">
     RED.nodes.registerType('rev-pi-io-reset',{
         category: 'function',
-        color: '#ff8660',
+        color: '#ea6711',
         defaults: {
             name: {value:""},
             autoReset: {value:false}
         },
         inputs:1,
         outputs:0,
-        icon: "debug.png",
+        icon: "reset.png",
         label: function() {
             return this.name||"RevPi IO Reset";
         }

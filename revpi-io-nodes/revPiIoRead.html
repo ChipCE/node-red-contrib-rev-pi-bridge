@@ -1,7 +1,7 @@
 <script type="text/javascript">
     RED.nodes.registerType('rev-pi-io-read',{
         category: 'function',
-        color: '#ff8660',
+        color: '#ea6711',
         defaults: {
             name: {value:""},
             ioPort: {value:"",required:true},
@@ -17,7 +17,7 @@
         },
         inputs:1,
         outputs:1,
-        icon: "arrow-in.png",
+        icon: "arrow.png",
         label: function() {
             return this.name||(this.ioPort||"RevPi IO Read");
         },
