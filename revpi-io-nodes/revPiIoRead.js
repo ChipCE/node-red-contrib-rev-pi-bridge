@@ -5,102 +5,100 @@ module.exports = function(RED)
     {
         RED.nodes.createNode(this,config);
         var node = this;
-        //libs
+        // libs
         var ffi = require('ffi');
         var dio = ffi.Library( __dirname + '/dioBridge.so', {
             "readDIO": ['int', ['string']]
         });
-        //load config
+        // load config
         var ioPort = config.ioPort;
         var updateRate = config.updateRate;
         var ignoreFirst = config.ignoreFirst;
-        var autoPolling = config.autoPolling;
-        var pollingSpeed = Number(config.pollingSpeed);
-        var enableEdgeMode = config.enableEdgeMode;
+        var pollingMode = config.pollingMode;
+        var intervalPollingSpeed = Number(config.intervalPollingSpeed);
         var enableDebounce = config.enableDebounce;
         var risingEdgeDelay = Number(config.risingEdgeDelay);
         var fallingEdgeDelay = Number(config.fallingEdgeDelay);
         var enableCounter = config.enableCounter;
 
+        // data
         var upCounter = 0;
         var downCounter = 0;
         var lastRead = -1;
         var lastChanged = 0;
         var ioState = -1;
-        var lastSend = -1;
-        //new Date().getTime()
+        var ioError = false;
+
+        // args
+        var indicatorShape;
+        (pollingMode=="none")?indicatorShape="dot":indicatorShape="ring";
 
         lastRead = parseInt(dio.readDIO(ioPort));
         if(lastRead<0)
         {
-            node.status({ fill: "red", shape:(autoPolling)?"ring":"dot", text: "IO Error" });
+            node.status({ fill: "red", shape:"dot", text: "IO Error" });
+            node.error(ioPort + " IO error");
+            ioError = true;
+            ioState = -1;
         }
         else
         {
             ioState = lastRead;
-            lastSend = ioState;
             if(!ignoreFirst)
             {
-                node.status({ fill: "blue", shape:(autoPolling)?"ring":"dot", text: enableCounter? "" + ioState + " [" + upCounter + "/" + downCounter + "]":ioState });
+                node.status({ fill: "blue", shape:indicatorShape, text: enableCounter? "" + ioState + " [" + upCounter + "/" + downCounter + "]":ioState });
                 msg = {};
                 msg.payload = ioState;
+                msg.ioPort = ioPort;
+                if(enableCounter)
+                {
+                    msg.upCounter = upCounter;
+                    msg.downCounter = downCounter;
+                }
                 node.send(msg);
             }
             else
             {
-                node.status({ fill: "blue", shape:(autoPolling)?"ring":"dot", text: enableCounter? "" + ioState + " [" + upCounter + "/" + downCounter + "]":ioState });
+                node.status({ fill: "blue", shape:indicatorShape, text: enableCounter? "" + ioState + " [" + upCounter + "/" + downCounter + "]":ioState });
             }
         }
 
         function polling()
         {
-            msg = {};
             // Only send ouput if ioRead success
             if(ioState >= 0)
             {
-                if(enableEdgeMode)
+                node.status({ fill: "green", shape: "ring", text: enableCounter? "" + ioState + " [" + upCounter + "/" + downCounter + "]":ioState });
+                msg = {};
+                msg.payload = ioState;
+                msg.ioPort = ioPort;
+                if(enableCounter)
                 {
-                    if(lastSend != ioState)
-                    {
-                        lastSend = ioState;
-                        node.status({ fill: "green", shape: "ring", text: enableCounter? "" + ioState + " [" + upCounter + "/" + downCounter + "]":ioState });
-                        
-                        msg.payload = ioState;
-                        if(enableCounter)
-                        {
-                            msg.upCounter = upCounter;
-                            msg.downCounter = downCounter;
-                        }
-                        node.send(msg);
-                    }
+                    msg.upCounter = upCounter;
+                    msg.downCounter = downCounter;
                 }
-                else
-                {
-                    node.status({ fill: "green", shape: "ring", text: enableCounter? "" + ioState + " [" + upCounter + "/" + downCounter + "]":ioState });
-                    msg.payload = ioState;
-                    if(enableCounter)
-                    {
-                        msg.upCounter = upCounter;
-                        msg.downCounter = downCounter;
-                    }
-                    node.send(msg);
-                }
+                node.send(msg);
             }
         }
 
         function ioPolling()
         {
-            msg = {};
             res = parseInt(dio.readDIO(ioPort));
             if(res < 0)
             {
-                node.status({ fill: "red", shape:(autoPolling)?"ring":"dot", text: "IO Error" });
-                //node.warn("io error");
-                ioState = -1;
-                lastSend = -1;
+                // only execute once after error occured
+                if (!ioError)
+                {
+                    node.status({ fill: "red", shape:indicatorShape, text: "IO Error" });
+                    node.error("io error");
+                    ioError = true;
+                    ioState = -1;
+                }
             }
             else
             {
+                ioError = false;
+
                 if(lastRead != res)
                 {
                     lastRead = res;
@@ -108,7 +106,7 @@ module.exports = function(RED)
                     node.debug("IO read : " + res);
                 }
 
-                // cond for rising and falling edge
+                // count     for rising and falling edge
                 if(enableDebounce)
                 {
                     debounceTime = (res>0)?risingEdgeDelay:fallingEdgeDelay;
@@ -120,6 +118,21 @@ module.exports = function(RED)
                             (res>0)?upCounter++:downCounter++;
                             ioState = res;
                             node.log("IO " + ioPort +" state changed : " + ioState + " (" + triggerTime + "ms)");
+
+                            //test
+                            if(pollingMode=="edge")
+                            {
+                                node.status({ fill: "green", shape: "ring", text: enableCounter? "" + ioState + " [" + upCounter + "/" + downCounter + "]":ioState });
+                                msg = {};
+                                msg.payload = ioState;
+                                msg.ioPort = ioPort;
+                                if(enableCounter)
+                                {
+                                    msg.upCounter = upCounter;
+                                    msg.downCounter = downCounter;
+                                }
+                                node.send(msg);
+                            }
                         }
                     }
                 }
@@ -130,14 +143,30 @@ module.exports = function(RED)
                         (res>0)?upCounter++:downCounter++;
                         ioState = res;
                         node.log("IO state changed : " + ioState + " (" + (new Date().getTime() - lastChanged) + "ms)");
+
+                        //test
+                        if(pollingMode=="edge")
+                        {
+                            node.status({ fill: "green", shape: "ring", text: enableCounter? "" + ioState + " [" + upCounter + "/" + downCounter + "]":ioState });
+                            msg = {};
+                            msg.payload = ioState;
+                            msg.ioPort = ioPort;
+                            if(enableCounter)
+                            {
+                                msg.upCounter = upCounter;
+                                msg.downCounter = downCounter;
+                            }
+                            node.send(msg);
+                        }
                     }
                 }
             }
         }
         
+        
         //only start polling if the test read successed
-        if(autoPolling && (lastRead>=0))
-            node.pollLoop = setInterval(polling, pollingSpeed);
+        if(pollingMode=="interval" && (lastRead>=0))
+            node.pollLoop = setInterval(polling, intervalPollingSpeed);
 
         // iopool always runiing in background
         if(lastRead>=0)
@@ -149,7 +178,9 @@ module.exports = function(RED)
             if(ioState >= 0)
             {
                 node.status({ fill: "green", shape: "dot", text: enableCounter? "" + ioState + " [" + upCounter + "/" + downCounter + "]":ioState });
+                //msg = {};
                 msg.payload = ioState;
+                msg.ioPort = ioPort;
                 if(enableCounter)
                 {
                     msg.upCounter = upCounter;
@@ -161,7 +192,7 @@ module.exports = function(RED)
         
         node.on('close',function()
         {
-            if(autoPolling)
+            if(pollingMode=="interval")
                 clearInterval(node.pollLoop);
             clearInterval(node.ioPollLop);
             upCounter = 0;
@@ -169,7 +200,6 @@ module.exports = function(RED)
             lastRead = -1;
             lastChanged = 0;
             ioState = -1;
-            lastSend = -1;
         });
     }
     RED.nodes.registerType("rev-pi-io-read", revPiIoRead);

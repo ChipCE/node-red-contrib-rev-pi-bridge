@@ -19,7 +19,7 @@ module.exports = function(RED)
         {
             //maybe put dome delay here
             res = parseInt(dio.writeDIO(ioPort,parseInt(defaultValue)));
-            if(res >= 0)
+            if(res >= 0 && !isNaN(res))
                 node.status({ fill: "green", shape: "dot", text: defaultValue });
             else
                 node.status({ fill: "red", shape: "dot", text: "IO Error" });
@@ -30,6 +30,7 @@ module.exports = function(RED)
             if(Number.isInteger(msg.payload))
             {
                 res = parseInt(dio.writeDIO(ioPort,parseInt(msg.payload)));
+                //if(res >= 0 && !isNaN(res))
                 if(res >= 0)
                     node.status({ fill: "green", shape: "dot", text: msg.payload });
                 else

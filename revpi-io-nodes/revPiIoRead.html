@@ -1,16 +1,15 @@
 <script type="text/javascript">
     RED.nodes.registerType('rev-pi-io-read',{
         category: 'function',
-        color: '#ea6711',
+        color: '#ff9646',
         defaults: {
             name: {value:""},
             ioPort: {value:"",required:true},
             updateRate: {value:50,validate:RED.validators.number()},
             ignoreFirst : {value:false},
             enableCounter: {value:false},
-            autoPolling: {value:false},
-            pollingSpeed:{value:10,validate:RED.validators.number()},
-            enableEdgeMode: {value:true},
+            pollingMode:{value:"none"},
+            intervalPollingSpeed:{value:10,validate:RED.validators.number()},
             enableDebounce: {value:false},
             risingEdgeDelay: {value:10,validate:RED.validators.number()},
             fallingEdgeDelay: {value:10,validate:RED.validators.number()}
@@ -23,19 +22,6 @@
         },
         oneditprepare: function() 
         {
-            $("#node-input-autoPolling").change(function() {
-                if ($(this).is(":checked")) 
-                {
-                    $(".polling-setting").show();
-
-                } else 
-                {
-                    $(".polling-setting").hide();
-                    if($('#node-input-pollingSpeed').val() == "")
-                        $('#node-input-pollingSpeed').val(10);
-                }
-            });
-
             $("#node-input-enableDebounce").change(function() {
                 if ($(this).is(":checked"))
                 {
@@ -47,6 +33,19 @@
                         $('#node-input-risingEdgeDelay').val(10);
                     if($('#node-input-fallingEdgeDelay').val() == "")
                         $('#node-input-fallingEdgeDelay').val(10);
+                }
+            });
+
+            $("#node-input-pollingMode").change(function() {
+                if ($(this).val() == 'interval')
+                {
+                    $(".polling-setting").show();
+                }
+                else
+                {
+                    $(".polling-setting").hide();
+                    if($('#node-input-intervalPollingSpeed').val() == "")
+                        $('#node-input-intervalPollingSpeed').val(10);
                 }
             });
         }
@@ -78,18 +77,16 @@
     </div>
     <hr>
     <div class="form-row">
-        <label for="node-input-autoPolling"><i class="fa fa-repeat"></i> Auto Polling</label>
-        <input type="checkbox" id="node-input-autoPolling" placeholder="" style="display:inline-block; width:auto; vertical-align:top;">
-        <label> Enable</label>
+        <label for="node-input-pollingMode"><i class="fa fa-repeat"></i> Polling mode</label>
+        <select type="text" id="node-input-pollingMode" style="width:70%;">
+            <option value="none">None</option>
+            <option value="edge">Edge</option>
+            <option value="interval">Interval</option>
+        </select>
     </div>
     <div class="form-row polling-setting hide">
-        <label for="node-input-pollingSpeed"><i class="fa fa-angle-double-right"></i> Polling rate</label>
-        <input type="number" id="node-input-pollingSpeed" placeholder="ms">
-    </div>
-    <div class="form-row polling-setting hide">
-        <label for="node-input-enableEdgeMode"><i class="fa fa-sort"></i> Edge mode</label>
-        <input type="checkbox" id="node-input-enableEdgeMode" placeholder="" style="display:inline-block; width:auto; vertical-align:top;">
-        <label> Enable</label>
+        <label for="node-input-intervalPollingSpeed"><i class="fa fa-angle-double-right"></i> Polling rate</label>
+        <input type="number" id="node-input-intervalPollingSpeed" placeholder="ms">
     </div>
     <hr>
     <div class="form-row">
@@ -119,6 +116,8 @@
         <dl class="message-properties">
             <dt>payload<span class="property-type">int</span></dt>
             <dd>Pin state.</dd>
+            <dt style="color:#415099;">ioPort<span class="property-type">string</span></dt>
+            <dd>IO port name</dd>
             <dt style="color:#415099;">upCounter<span class="property-type">int</span></dt>
             <dd>Rising edge counter.</dd>
             <dt style="color:#415099;">downCounter<span class="property-type">int</span></dt>
@@ -128,23 +127,34 @@
         <dl class="message-properties">
             <dt>IO Port<span class="property-type">string</span></dt>
             <dd>IO port name.</dd>
+
             <dt>Update rate<span class="property-type">int</span></dt>
-            <dd>IO refresh interval(ms). Due hardware and software limit, DO NOT set this value too low. Value higher than 10ms is recommended.</dd>
+            <dd>IO refresh interval(ms).</dd>
+
             <dt>Ignore first<span class="property-type">bool</span></dt>
             <dd>Skip sending the init value.</dd>
+
             <dt>Counter<span class="property-type">bool</span></dt>
             <dd>Enable rising edge and falling edge counter.</dd>
-            <dt style="color:#415099;">Polling rate<span class="property-type">int</span></dt>
-            <dt>Auto Polling<span class="property-type">bool</span></dt>
+
+            <dt>Polling mode : None<span class="property-type">select</span></dt>
+            <dd>Only send output when injected.</dd>
+
+            <dt>Polling mode : Interval<span class="property-type">select</span></dt>
             <dd>Auto send output after interval(ms).</dd>
-            <dt style="color:#415099;">Polling rate<span class="property-type">int</span></dt>
-            <dd>Pooling send interval(ms).</dd>
-            <dt style="color:#415099;">Edge mode<span class="property-type">bool</span></dt>
+
+            <dt>Polling mode : Edge<span class="property-type">select</span></dt>
             <dd>Only send ouput if the IO state changed.</dd>
+
+            <dt style="color:#415099;">Polling rate<span class="property-type">int</span></dt>
+            <dd>Pooling send interval(ms) in Interval polling mode.</dd>
+
             <dt>Debounce<span class="property-type">bool</span></dt>
             <dd>Enable software debounce.</dd>
+
             <dt style="color:#415099;">Rising Edge<span class="property-type">int</span></dt>
             <dd>Debounce threshold for rising edge(ms).</dd>
+
             <dt style="color:#415099;">Falling Edge<span class="property-type">int</span></dt>
             <dd>Debounce threshold for falling edge(ms).</dd>
         </dl>
