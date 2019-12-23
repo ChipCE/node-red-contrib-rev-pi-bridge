@@ -1,4 +1,4 @@
-# rev-pi-nodered-bridge
+# node-red-contrib-rev-pi-bridge
 
 Access Revolution Pi IO using nodered and IO-name.  
 Require nodejs v11. This node does not support node v12 yet due it's dependencie FFI cannot be compiled with node v12. 
