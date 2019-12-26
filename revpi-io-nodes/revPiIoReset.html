@@ -3,8 +3,7 @@
         category: 'function',
         color: '#ff9646',
         defaults: {
-            name: {value:""},
-            autoReset: {value:false}
+            name: {value:""}
         },
         inputs:1,
         outputs:0,
@@ -20,11 +19,6 @@
         <label for="node-input-name"><i class="icon-tag"></i> Name</label>
         <input type="text" id="node-input-name" placeholder="Name">
     </div>
-    <div class="form-row">
-        <label for="node-input-autoReset"><i class="fa fa-spinner"></i> On deploy</label>
-        <input type="checkbox" id="node-input-autoReset" placeholder="" style="display:inline-block; width:auto; vertical-align:top;">
-        <label> Reset DIO</label>
-    </div>
 </script>
 
 <script type="text/x-red" data-help-name="rev-pi-io-reset">
@@ -33,10 +27,5 @@
         <dl class="message-properties">
             <dt>payload<span class="property-type">any</span></dt>
             <dd>Force execute IO reset.</dd>
-        </dl>
-    <h3>Configuration</h3>
-        <dl class="message-properties">
-            <dt>On deploy<span class="property-type">bool</span></dt>
-            <dd>Reset IO on deploy and node-red startup.</dd>
         </dl>
 </script>

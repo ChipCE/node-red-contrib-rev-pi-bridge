@@ -17,28 +17,43 @@ module.exports = function(RED)
         //default
         if(enableDefault)
         {
-            //maybe put dome delay here
-            res = parseInt(dio.writeDIO(ioPort,parseInt(defaultValue)));
-            if(res >= 0 && !isNaN(res))
-                node.status({ fill: "green", shape: "dot", text: defaultValue });
-            else
-                node.status({ fill: "red", shape: "dot", text: "IO Error" });
-        }
-
-        node.on('input', function(msg)
-        {
-            if(Number.isInteger(msg.payload))
+            writeValue = parseInt(defaultValue);
+            if(!isNaN(writeValue))
             {
-                res = parseInt(dio.writeDIO(ioPort,parseInt(msg.payload)));
-                //if(res >= 0 && !isNaN(res))
+                res = parseInt(dio.writeDIO(ioPort,writeValue));
                 if(res >= 0)
-                    node.status({ fill: "green", shape: "dot", text: msg.payload });
+                    node.status({ fill: "blue", shape: writeValue>0?"dot":"ring", text: defaultValue });
                 else
+                {
                     node.status({ fill: "red", shape: "dot", text: "IO Error" });
+                    node.error("IO Error : Cannot write value : " + defaultValue);
+                }
             }
             else
             {
                 node.status({ fill: "yellow", shape: "dot", text: "Invalid value" });
+                node.warn("Invalid default value : " + defaultValue);
+            }
+        }
+
+        node.on('input', function(msg)
+        {
+            writeValue = parseInt(msg.payload);
+            if(!isNaN(writeValue))
+            {
+                res = parseInt(dio.writeDIO(ioPort,writeValue));
+                if(res >= 0)
+                    node.status({ fill: "green", shape: writeValue>0?"dot":"ring", text: msg.payload });
+                else
+                {
+                    node.status({ fill: "red", shape: "dot", text: "IO Error" });
+                    node.error("IO Error : Cannot write value : " + defaultValue);
+                }
+            }
+            else
+            {
+                node.status({ fill: "yellow", shape: "dot", text: "Invalid value" });
+                node.warn("Invalid value : " + msg.payload);
             }
         });
 

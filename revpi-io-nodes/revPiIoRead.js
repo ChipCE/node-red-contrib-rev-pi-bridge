@@ -1,6 +1,5 @@
 module.exports = function(RED)
 {
-	
     function revPiIoRead(config) 
     {
         RED.nodes.createNode(this,config);
@@ -13,7 +12,7 @@ module.exports = function(RED)
         // load config
         var ioPort = config.ioPort;
         var updateRate = config.updateRate;
-        var ignoreFirst = config.ignoreFirst;
+        var skipInitVal = config.skipInitVal;
         var pollingMode = config.pollingMode;
         var intervalPollingSpeed = Number(config.intervalPollingSpeed);
         var enableDebounce = config.enableDebounce;
@@ -28,47 +27,15 @@ module.exports = function(RED)
         var lastChanged = 0;
         var ioState = -1;
         var ioError = false;
+        var ignore = skipInitVal;
 
-        // args
-        var indicatorShape;
-        (pollingMode=="none")?indicatorShape="dot":indicatorShape="ring";
-
-        lastRead = parseInt(dio.readDIO(ioPort));
-        if(lastRead<0)
-        {
-            node.status({ fill: "red", shape:"dot", text: "IO Error" });
-            node.error(ioPort + " IO error");
-            ioError = true;
-            ioState = -1;
-        }
-        else
-        {
-            ioState = lastRead;
-            if(!ignoreFirst)
-            {
-                node.status({ fill: "blue", shape:indicatorShape, text: enableCounter? "" + ioState + " [" + upCounter + "/" + downCounter + "]":ioState });
-                msg = {};
-                msg.payload = ioState;
-                msg.ioPort = ioPort;
-                if(enableCounter)
-                {
-                    msg.upCounter = upCounter;
-                    msg.downCounter = downCounter;
-                }
-                node.send(msg);
-            }
-            else
-            {
-                node.status({ fill: "blue", shape:indicatorShape, text: enableCounter? "" + ioState + " [" + upCounter + "/" + downCounter + "]":ioState });
-            }
-        }
+        node.status({ fill: "blue", shape:"dot", text: "Ready" });
 
         function polling()
         {
             // Only send ouput if ioRead success
             if(ioState >= 0)
             {
-                node.status({ fill: "green", shape: "ring", text: enableCounter? "" + ioState + " [" + upCounter + "/" + downCounter + "]":ioState });
                 msg = {};
                 msg.payload = ioState;
                 msg.ioPort = ioPort;
@@ -89,7 +56,7 @@ module.exports = function(RED)
                 // only execute once after error occured
                 if (!ioError)
                 {
-                    node.status({ fill: "red", shape:indicatorShape, text: "IO Error" });
+                    node.status({ fill: "red", shape:"dot", text: "IO Error" });
                     node.error("io error");
                     ioError = true;
                     ioState = -1;
@@ -106,7 +73,6 @@ module.exports = function(RED)
                     node.debug("IO read : " + res);
                 }
 
-                // count     for rising and falling edge
                 if(enableDebounce)
                 {
                     debounceTime = (res>0)?risingEdgeDelay:fallingEdgeDelay;
@@ -117,12 +83,12 @@ module.exports = function(RED)
                         {
                             (res>0)?upCounter++:downCounter++;
                             ioState = res;
-                            node.log("IO " + ioPort +" state changed : " + ioState + " (" + triggerTime + "ms)");
+                            node.log("IO " + ioPort + " state changed : " + ioState + " (" + triggerTime + "ms)");
+                            node.status({ fill: "green", shape: ioState>0?"dot":"ring", text: enableCounter? "" + ioState + " [" + upCounter + "/" + downCounter + "]":ioState });
 
                             //test
-                            if(pollingMode=="edge")
+                            if(pollingMode=="edge" && !ignore)
                             {
-                                node.status({ fill: "green", shape: "ring", text: enableCounter? "" + ioState + " [" + upCounter + "/" + downCounter + "]":ioState });
                                 msg = {};
                                 msg.payload = ioState;
                                 msg.ioPort = ioPort;
@@ -132,6 +98,10 @@ module.exports = function(RED)
                                     msg.downCounter = downCounter;
                                 }
                                 node.send(msg);
+                            }
+                            else
+                            {
+                                ignore = false;
                             }
                         }
                     }
@@ -143,11 +113,11 @@ module.exports = function(RED)
                         (res>0)?upCounter++:downCounter++;
                         ioState = res;
                         node.log("IO state changed : " + ioState + " (" + (new Date().getTime() - lastChanged) + "ms)");
+                        node.status({ fill: "green", shape: ioState>0?"dot":"ring", text: enableCounter? "" + ioState + " [" + upCounter + "/" + downCounter + "]":ioState });
 
                         //test
-                        if(pollingMode=="edge")
+                        if(pollingMode=="edge" && !ignore)
                         {
-                            node.status({ fill: "green", shape: "ring", text: enableCounter? "" + ioState + " [" + upCounter + "/" + downCounter + "]":ioState });
                             msg = {};
                             msg.payload = ioState;
                             msg.ioPort = ioPort;
@@ -158,26 +128,26 @@ module.exports = function(RED)
                             }
                             node.send(msg);
                         }
+                        else
+                        {
+                            ignore = false;
+                        }
                     }
                 }
             }
         }
-        
-        
+
         //only start polling if the test read successed
-        if(pollingMode=="interval" && (lastRead>=0))
+        if(pollingMode=="interval")
             node.pollLoop = setInterval(polling, intervalPollingSpeed);
 
         // iopool always runiing in background
-        if(lastRead>=0)
-            node.ioPollLop = setInterval(ioPolling, updateRate);
-        
+        node.ioPollLoop = setInterval(ioPolling, updateRate);
  
         node.on('input', function(msg)
         {
             if(ioState >= 0)
             {
-                node.status({ fill: "green", shape: "dot", text: enableCounter? "" + ioState + " [" + upCounter + "/" + downCounter + "]":ioState });
                 //msg = {};
                 msg.payload = ioState;
                 msg.ioPort = ioPort;
@@ -189,12 +159,12 @@ module.exports = function(RED)
                 node.send(msg);
             }
         });
-        
+
         node.on('close',function()
         {
             if(pollingMode=="interval")
                 clearInterval(node.pollLoop);
-            clearInterval(node.ioPollLop);
+            clearInterval(node.ioPollLoop);
             upCounter = 0;
             downCounter = 0;
             lastRead = -1;

@@ -6,10 +6,10 @@
             name: {value:""},
             ioPort: {value:"",required:true},
             updateRate: {value:50,validate:RED.validators.number()},
-            ignoreFirst : {value:false},
+            skipInitVal : {value:false},
             enableCounter: {value:false},
             pollingMode:{value:"none"},
-            intervalPollingSpeed:{value:10,validate:RED.validators.number()},
+            intervalPollingSpeed:{value:1000,validate:RED.validators.number()},
             enableDebounce: {value:false},
             risingEdgeDelay: {value:10,validate:RED.validators.number()},
             fallingEdgeDelay: {value:10,validate:RED.validators.number()}
@@ -39,11 +39,19 @@
             $("#node-input-pollingMode").change(function() {
                 if ($(this).val() == 'interval')
                 {
-                    $(".polling-setting").show();
+                    $(".interval-polling-setting").show();
+                    $(".edge-polling-setting").hide();
+                }
+                else if ($(this).val() == 'edge')
+                {
+                    $(".edge-polling-setting").show();
+                    $(".interval-polling-setting").hide();
                 }
                 else
                 {
-                    $(".polling-setting").hide();
+                    $(".interval-polling-setting").hide();
+                    $(".edge-polling-setting").hide();
+
                     if($('#node-input-intervalPollingSpeed').val() == "")
                         $('#node-input-intervalPollingSpeed').val(10);
                 }
@@ -66,11 +74,6 @@
         <input type="number" id="node-input-updateRate" placeholder="Update rate(ms)">
     </div>
     <div class="form-row">
-        <label for="node-input-ignoreFirst"><i class="fa fa-times"></i> Ignore first</label>
-        <input type="checkbox" id="node-input-ignoreFirst" placeholder="" style="display:inline-block; width:auto; vertical-align:top;">
-        <label> Enable</label>
-    </div>
-    <div class="form-row">
         <label for="node-input-enableCounter"><i class="fa fa-tachometer"></i> Counter</label>
         <input type="checkbox" id="node-input-enableCounter" placeholder="" style="display:inline-block; width:auto; vertical-align:top;">
         <label> Enable</label>
@@ -84,9 +87,14 @@
             <option value="interval">Interval</option>
         </select>
     </div>
-    <div class="form-row polling-setting hide">
+    <div class="form-row interval-polling-setting hide">
         <label for="node-input-intervalPollingSpeed"><i class="fa fa-angle-double-right"></i> Polling rate</label>
         <input type="number" id="node-input-intervalPollingSpeed" placeholder="ms">
+    </div>
+    <div class="form-row edge-polling-setting hide">
+        <label for="node-input-skipInitVal"><i class="fa fa-times"></i> Skip init val</label>
+        <input type="checkbox" id="node-input-skipInitVal" placeholder="" style="display:inline-block; width:auto; vertical-align:top;">
+        <label> Enable</label>
     </div>
     <hr>
     <div class="form-row">
@@ -116,11 +124,11 @@
         <dl class="message-properties">
             <dt>payload<span class="property-type">int</span></dt>
             <dd>Pin state.</dd>
-            <dt style="color:#415099;">ioPort<span class="property-type">string</span></dt>
+            <dt>ioPort<span class="property-type">string</span></dt>
             <dd>IO port name</dd>
-            <dt style="color:#415099;">upCounter<span class="property-type">int</span></dt>
+            <dt>upCounter<span class="property-type">int</span></dt>
             <dd>Rising edge counter.</dd>
-            <dt style="color:#415099;">downCounter<span class="property-type">int</span></dt>
+            <dt>downCounter<span class="property-type">int</span></dt>
             <dd>Falling edge counter.</dd>
         </dl>
     <h3>Configuration</h3>
@@ -131,31 +139,17 @@
             <dt>Update rate<span class="property-type">int</span></dt>
             <dd>IO refresh interval(ms).</dd>
 
-            <dt>Ignore first<span class="property-type">bool</span></dt>
-            <dd>Skip sending the init value.</dd>
-
             <dt>Counter<span class="property-type">bool</span></dt>
             <dd>Enable rising edge and falling edge counter.</dd>
 
-            <dt>Polling mode : None<span class="property-type">select</span></dt>
-            <dd>Only send output when injected.</dd>
-
-            <dt>Polling mode : Interval<span class="property-type">select</span></dt>
-            <dd>Auto send output after interval(ms).</dd>
-
-            <dt>Polling mode : Edge<span class="property-type">select</span></dt>
-            <dd>Only send ouput if the IO state changed.</dd>
-
-            <dt style="color:#415099;">Polling rate<span class="property-type">int</span></dt>
-            <dd>Pooling send interval(ms) in Interval polling mode.</dd>
+            <dt>Polling mode<span class="property-type">None/Interval/Edge</span></dt>
+            <dd><code style="color:#415099;">None</code> Only send output when injected.</dd>
+            <dd><code style="color:#415099;">Interval</code> Auto send output after interval(ms).</dd>
+            <dd><code style="color:#415099;">Edge</code> Only send ouput if the IO state changed.</dd>
 
             <dt>Debounce<span class="property-type">bool</span></dt>
             <dd>Enable software debounce.</dd>
-
-            <dt style="color:#415099;">Rising Edge<span class="property-type">int</span></dt>
-            <dd>Debounce threshold for rising edge(ms).</dd>
-
-            <dt style="color:#415099;">Falling Edge<span class="property-type">int</span></dt>
-            <dd>Debounce threshold for falling edge(ms).</dd>
+            <dd><code style="color:#415099;">Rising Edge</code> Threshold for rising edge(ms).</dd>
+            <dd><code style="color:#415099;">Falling Edge</code> Threshold for Falling edge(ms).</dd>
         </dl>
 </script>
