@@ -27,7 +27,7 @@ module.exports = function(RED)
         var lastChanged = 0;
         var ioState = -1;
         var ioError = false;
-        var ignore = skipInitVal;
+        var firstRead = true;
 
         node.status({ fill: "blue", shape:"dot", text: "Ready" });
 
@@ -81,13 +81,14 @@ module.exports = function(RED)
                     {
                         if(ioState!=res)
                         {
-                            (res>0)?upCounter++:downCounter++;
+                            if(!firstRead)
+                                (res>0)?upCounter++:downCounter++;
                             ioState = res;
                             node.log("IO " + ioPort + " state changed : " + ioState + " (" + triggerTime + "ms)");
                             node.status({ fill: "green", shape: ioState>0?"dot":"ring", text: enableCounter? "" + ioState + " [" + upCounter + "/" + downCounter + "]":ioState });
 
                             //test
-                            if(pollingMode=="edge" && !ignore)
+                            if(pollingMode=="edge" && !(skipInitVal && firstRead))
                             {
                                 msg = {};
                                 msg.payload = ioState;
@@ -99,10 +100,8 @@ module.exports = function(RED)
                                 }
                                 node.send(msg);
                             }
-                            else
-                            {
-                                ignore = false;
-                            }
+                            if(firstRead)
+                                firstRead = !firstRead;
                         }
                     }
                 }
@@ -110,13 +109,14 @@ module.exports = function(RED)
                 {
                     if(ioState!=res)
                     {
-                        (res>0)?upCounter++:downCounter++;
+                        if(!firstRead)
+                            (res>0)?upCounter++:downCounter++;
                         ioState = res;
                         node.log("IO state changed : " + ioState + " (" + (new Date().getTime() - lastChanged) + "ms)");
                         node.status({ fill: "green", shape: ioState>0?"dot":"ring", text: enableCounter? "" + ioState + " [" + upCounter + "/" + downCounter + "]":ioState });
 
                         //test
-                        if(pollingMode=="edge" && !ignore)
+                        if(pollingMode=="edge" && !(skipInitVal && firstRead))
                         {
                             msg = {};
                             msg.payload = ioState;
@@ -128,10 +128,8 @@ module.exports = function(RED)
                             }
                             node.send(msg);
                         }
-                        else
-                        {
-                            ignore = false;
-                        }
+                        if(firstRead)
+                            firstRead = !firstRead;
                     }
                 }
             }
