@@ -16,7 +16,7 @@
 #include "piControlIf.h"
 #include "piControl.h"
 
-#define LIB_DEBUG
+//#define LIB_DEBUG
 
 int writeDIO(char *pszVariableName, uint32_t i32uValue);
 int readDIO(char *pszVariableName);

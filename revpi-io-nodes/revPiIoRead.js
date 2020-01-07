@@ -97,6 +97,7 @@ module.exports = function(RED)
                                 {
                                     msg.upCounter = upCounter;
                                     msg.downCounter = downCounter;
+                                    node.log("IO " + ioPort + " risingCounter:" + upCounter + ", fallingCounter:" + downCounter);
                                 }
                                 node.send(msg);
                             }
@@ -112,7 +113,7 @@ module.exports = function(RED)
                         if(!firstRead)
                             (res>0)?upCounter++:downCounter++;
                         ioState = res;
-                        node.log("IO state changed : " + ioState + " (" + (new Date().getTime() - lastChanged) + "ms)");
+                        node.log("IO " + ioPort + " state changed : " + ioState + " (" + (new Date().getTime() - lastChanged) + "ms)");
                         node.status({ fill: "green", shape: ioState>0?"dot":"ring", text: enableCounter? "" + ioState + " [" + upCounter + "/" + downCounter + "]":ioState });
 
                         //test
@@ -125,6 +126,7 @@ module.exports = function(RED)
                             {
                                 msg.upCounter = upCounter;
                                 msg.downCounter = downCounter;
+                                node.log("IO " + ioPort + " risingCounter:" + upCounter + ", fallingCounter:" + downCounter);
                             }
                             node.send(msg);
                         }

@@ -12,7 +12,9 @@ int writeDIO(char *pszVariableName, uint32_t i32uValue)
 	rc = piControlGetVariableInfo(&sPiVariable);
 	if (rc < 0) 
 	{
-		fprintf( stderr,"Cannot find variable '%s'\n", pszVariableName);
+		#ifdef LIB_DEBUG
+			fprintf( stderr,"Cannot find variable '%s'\n", pszVariableName);
+		#endif
 		return rc<0 ? rc : -rc;
 	}
 
@@ -24,7 +26,9 @@ int writeDIO(char *pszVariableName, uint32_t i32uValue)
 		rc = piControlSetBitValue(&sPIValue);
 		if (rc < 0)
 		{
-			fprintf( stderr,"Set bit error %s\n", getWriteError(rc));
+			#ifdef LIB_DEBUG
+				fprintf( stderr,"Set bit error %s\n", getWriteError(rc));
+			#endif
 			return rc<0 ? rc : -rc;
 		}
 		else
@@ -39,7 +43,9 @@ int writeDIO(char *pszVariableName, uint32_t i32uValue)
 		rc = piControlWrite(sPiVariable.i16uAddress, 1, (uint8_t *) & i8uValue);
 		if (rc < 0)
 		{
-			fprintf( stderr,"Write error %s\n", getWriteError(rc));
+			#ifdef LIB_DEBUG
+				fprintf( stderr,"Write error %s\n", getWriteError(rc));
+			#endif
 			return rc<0 ? rc : -rc;
 		}
 		else
@@ -54,7 +60,9 @@ int writeDIO(char *pszVariableName, uint32_t i32uValue)
 		rc = piControlWrite(sPiVariable.i16uAddress, 2, (uint8_t *) & i16uValue);
 		if (rc < 0)
 		{
-			fprintf( stderr,"Write error %s\n", getWriteError(rc));
+			#ifdef LIB_DEBUG
+				fprintf( stderr,"Write error %s\n", getWriteError(rc));
+			#endif
 			return rc<0 ? rc : -rc;
 		}
 		else
@@ -68,7 +76,9 @@ int writeDIO(char *pszVariableName, uint32_t i32uValue)
 		rc = piControlWrite(sPiVariable.i16uAddress, 4, (uint8_t *) & i32uValue);
 		if (rc < 0)
 		{
-			fprintf( stderr,"Write error %s\n", getWriteError(rc));
+			#ifdef LIB_DEBUG
+				fprintf( stderr,"Write error %s\n", getWriteError(rc));
+			#endif
 			return rc<0 ? rc : -rc;
 		}
 		else
@@ -93,7 +103,9 @@ int readDIO(char *pszVariableName)
 	rc = piControlGetVariableInfo(&sPiVariable);
 	if (rc < 0) 
 	{
-		fprintf( stderr,"Cannot find variable '%s'\n", pszVariableName);
+		#ifdef LIB_DEBUG
+			fprintf( stderr,"Cannot find variable '%s'\n", pszVariableName);
+		#endif
 		return rc<0 ? rc : -rc;
 	}
 
@@ -105,7 +117,9 @@ int readDIO(char *pszVariableName)
 		rc = piControlGetBitValue(&sPIValue);
 		if (rc < 0)
 		{
-			fprintf( stderr,"Get bit error\n");
+			#ifdef LIB_DEBUG
+				fprintf( stderr,"Get bit error\n");
+			#endif
 			return rc<0 ? rc : -rc;
 		}
 		else 
@@ -120,7 +134,9 @@ int readDIO(char *pszVariableName)
 		rc = piControlRead(sPiVariable.i16uAddress, 1, (uint8_t *) & i8uValue);
 		if (rc < 0)
 		{
-			fprintf( stderr,"Read error\n");
+			#ifdef LIB_DEBUG
+				fprintf( stderr,"Read error\n");
+			#endif
 			return rc<0 ? rc : -rc;
 		}
 		else
@@ -135,7 +151,9 @@ int readDIO(char *pszVariableName)
 		rc = piControlRead(sPiVariable.i16uAddress, 2, (uint8_t *) & i16uValue);
 		if (rc < 0)
 		{
-			fprintf( stderr,"Read error\n");
+			#ifdef LIB_DEBUG
+				fprintf( stderr,"Read error\n");
+			#endif
 			return rc<0 ? rc : -rc;
 		}
 		else 
@@ -150,7 +168,9 @@ int readDIO(char *pszVariableName)
 		rc = piControlRead(sPiVariable.i16uAddress, 4, (uint8_t *) & i32uValue);
 		if (rc < 0)
 		{
-			fprintf( stderr,"Read error\n");
+			#ifdef LIB_DEBUG
+				fprintf( stderr,"Read error\n");
+			#endif
 			return rc<0 ? rc : -rc;
 		}
 		else 
@@ -162,7 +182,9 @@ int readDIO(char *pszVariableName)
 	} 
 	else
 	{
-		fprintf( stderr,"Could not read variable %s. Internal Error\n", pszVariableName);
+		#ifdef LIB_DEBUG
+			fprintf( stderr,"Could not read variable %s. Internal Error\n", pszVariableName);
+		#endif
 		return rc<0 ? rc : -rc;
 	}
 }
