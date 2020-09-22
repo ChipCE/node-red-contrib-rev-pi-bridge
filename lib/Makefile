@@ -1,5 +1,6 @@
 CLEANEXTS = o so
 CFLAGS += -I. -I.. -std=c11
+LDFLAGS = -shared
 SOURCES = piControlIf.c dioBridge.c
 OUTPUTFILE = revPiIoBridge.so
 INSTALLDIR = ../revpi-io-nodes/
@@ -9,7 +10,7 @@ TARGET_LIB = dioBridge.so
 all: $(OUTPUTFILE)
 
 $(OUTPUTFILE): $(subst .c,.o,$(SOURCES))
-	$(CXX) -shared -fPIC $(LDFLAGS) -o $@ $^
+	$(CXX) $(LDFLAGS) -fPIC $(LDFLAGS) -o $@ $^
 
 .PHONY: install
 install:

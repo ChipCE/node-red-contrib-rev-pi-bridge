@@ -9,7 +9,13 @@
             skipInitVal : {value:false},
             enableCounter: {value:false},
             pollingMode:{value:"none"},
-            intervalPollingSpeed:{value:1000,validate:RED.validators.number()},
+            intervalPollingSpeed:{value:1000,validate:function(v)
+            {
+                if(this.pollingMode == "interval")
+                    return RED.validators.number()
+                else
+                    return true;
+            }},
             enableDebounce: {value:false},
             risingEdgeDelay: {value:10,validate:RED.validators.number()},
             fallingEdgeDelay: {value:10,validate:RED.validators.number()}
